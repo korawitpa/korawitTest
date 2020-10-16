@@ -1,0 +1,5 @@
+.idea/*
+Backend/.idea/*
+Backend/venv/*
+Backend/App/__pycache__/*
+Backend/App/Upload/__pycache__/*
