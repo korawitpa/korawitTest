@@ -93,3 +93,33 @@ def get(filename):
     if not result_status:
         return jsonify({'error': result_msg}), 406
     return send_file(os.path.join(os.getcwd(), result_msg[0]['FilePath']))
+
+
+@app.route('', methods=['PUT'])
+def update():
+    params = request.json
+
+    old_filename = params['old_filename'].split('/')[-1]
+    path = params['old_filename'].replace(old_filename, '')
+
+    update_data = {}
+    update_data['FileName'] = params['new_filename'].split('/')[-1]
+    update_data['FilePath'] = f"{path}{update_data['FileName']}"
+    update_data['ID'] = params['id']
+
+    # Check there is file
+    result_status, result_msg = database.getData(filename=old_filename)
+    if not result_status:
+        return jsonify({'error': result_msg}), 406
+    if not result_msg:
+        return jsonify({'error': 'File not found'}), 404
+
+    # Rename file from storage
+    os.rename(params['old_filename'], params['new_filename'])
+
+    # Rename file from database
+    result_status, result_msg = database.updateData(update_data)
+    if not result_status:
+        return jsonify({'error': result_msg}), 406
+
+    return jsonify({'msg': 'rename file success'})

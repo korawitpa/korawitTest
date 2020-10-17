@@ -86,3 +86,31 @@ class Database:
             return True, result
         except Exception as e:
             return False, "Select file error: {}".format(e)
+
+    # rename
+    def updateData(self, data):
+        data['LastActionDate'] = datetime.datetime.now().isoformat()
+        data['Action'] = 'Rename'
+
+        check_data = self.getData(data['FileName'])
+        if check_data:
+            query_string = "UPDATE {} SET".format(Config['mysql']['table'])
+            update_set = []
+            for d in data:
+                if type(data[d]) is str or type(data[d]) is bytes:
+                    update_set.append(' %s="%s"' % (d, data[d]))
+                elif type(data[d]) is int:
+                    update_set.append(' %s=%d' % (d, data[d]))
+                elif type(data[d]) is float:
+                    update_set.append(' %s=%f' % (d, data[d]))
+            query_string += ','.join(update_set)
+            query_string += ' WHERE ID="%s"' % data['ID']
+            try:
+                connection_context, cursor = self.connectToDatabase()
+                cursor.execute(query_string)
+                connection_context.commit()
+                self.disconnectToDatabase(connection_context)
+                return True, 'Update filename success'
+            except Exception as e:
+                return False, e
+        return False, 'Can\'t update filename'
