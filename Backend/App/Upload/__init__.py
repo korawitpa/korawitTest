@@ -92,6 +92,9 @@ def get(filename):
     result_status, result_msg = database.getData(filename=filename)
     if not result_status:
         return jsonify({'error': result_msg}), 406
+    if not result_msg:
+        return jsonify({'error': 'File not found'}), 404
+
     return send_file(os.path.join(os.getcwd(), result_msg[0]['FilePath']))
 
 
@@ -123,3 +126,19 @@ def update():
         return jsonify({'error': result_msg}), 406
 
     return jsonify({'msg': 'rename file success'})
+
+
+@app.route('', methods=['DELETE'])
+def remove():
+    params = request.json
+
+    # Remove file from storage
+    if os.path.exists(params['file_path']):
+        os.remove(params['file_path'])
+
+    # Remove file from database
+    result_status, result_msg = database.removeData(params)
+    if not result_status:
+        return jsonify({'error': result_msg}), 406
+
+    return jsonify({'msg': 'Remove file success'})

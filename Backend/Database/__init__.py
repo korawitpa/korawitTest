@@ -56,12 +56,11 @@ class Database:
         data['UploadDate'] = datetime.datetime.now().isoformat()
         data['LastActionDate'] = data['UploadDate']
         data['Action'] = 'Upload'
-        data['Status'] = 'Active'
         # Insert into data
         try:
             querty_string = "INSERT INTO {} ".format(Config['mysql']['table'])
-            querty_string += "(FilePath, FileName, FileType, FileSize, Status, Action, UploadDate, LastActionDate) " \
-                             "VALUES (%(FilePath)s, %(FileName)s, %(FileType)s, %(FileSize)s, %(Status)s, %(Action)s, %(UploadDate)s, " \
+            querty_string += "(FilePath, FileName, FileType, FileSize, Action, UploadDate, LastActionDate) " \
+                             "VALUES (%(FilePath)s, %(FileName)s, %(FileType)s, %(FileSize)s, %(Action)s, %(UploadDate)s, " \
                              "%(LastActionDate)s)"
             connection_context, cursor = self.connectToDatabase()
             cursor.execute(querty_string, data)
@@ -78,6 +77,7 @@ class Database:
             querty_string = 'SELECT * FROM {}'.format(Config['mysql']['table'])
             if filename:
                 querty_string += ' WHERE FileName="{}"'.format(filename)
+
             connection_context, cursor = self.connectToDatabase()
             cursor.execute(querty_string)
             result = cursor.fetchall()
@@ -114,3 +114,16 @@ class Database:
             except Exception as e:
                 return False, e
         return False, 'Can\'t update filename'
+
+    # remove
+    def removeData(self, id):
+        query_string = 'DELETE FROM {} WHERE ID="{}"'.format(Config['mysql']['table'], id)
+        try:
+            connection_context, cursor = self.connectToDatabase()
+            cursor.execute(query_string)
+            connection_context.commit()
+            # Close connection to database
+            self.disconnectToDatabase(connection_context)
+            return True, 'Delete file in database success'
+        except Exception as e:
+            return False, 'Delete file in database error: {}'.format(e)
