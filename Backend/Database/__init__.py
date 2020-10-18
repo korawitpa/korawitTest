@@ -59,8 +59,8 @@ class Database:
         # Insert into data
         try:
             querty_string = "INSERT INTO {} ".format(Config['mysql']['table'])
-            querty_string += "(FilePath, FileName, FileType, FileSize, Action, UploadDate, LastActionDate) " \
-                             "VALUES (%(FilePath)s, %(FileName)s, %(FileType)s, %(FileSize)s, %(Action)s, %(UploadDate)s, " \
+            querty_string += "(FilePath, FileThumbnailPath, FileName, FileType, FileSize, Action, UploadDate, LastActionDate) " \
+                             "VALUES (%(FilePath)s, %(FileThumbnailPath)s, %(FileName)s, %(FileType)s, %(FileSize)s, %(Action)s, %(UploadDate)s, " \
                              "%(LastActionDate)s)"
             connection_context, cursor = self.connectToDatabase()
             cursor.execute(querty_string, data)
