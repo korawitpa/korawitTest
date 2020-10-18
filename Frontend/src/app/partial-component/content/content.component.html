@@ -1,13 +1,44 @@
-<div class="container">
+<div class="container-full">
     <div class="content">
         <div class="row">
-            <Label for="search">SEARCH: </Label>
-            <div class="row">
-                <input id="search" placeholder="filename">
-                <input id="search" placeholder="filetype">
-                <input type="datetime-local" id="search" placeholder="uploaddate">
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">SEARCH</span>
+                </div>
+                <input type="text" aria-label="filename" class="form-control" placeholder="File Name">
+                <input type="text" aria-label="filetype" class="form-control" placeholder="File Type">
+                <input type="datetime-local" aria-label="uploaddate" class="form-control">
+                <button type="button" class="btn btn-secondary">SEARCH</button>
+                <button type="button" class="btn btn-secondary" onclick="document.getElementById('getFile').click()">UPLOAD</button>
+                <input type='file' id="getFile" style="display:none" (change)="upload($event)">
             </div>
-            <img src="http://127.0.0.1:8000/upload/120825973_3348684908584627_4000278621858019277_o.jpg">
+        </div>
+        <div class="row">
+            <table class="table">
+                <thead>
+                  <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Rename</th>
+                    <th scope="col">Delete</th>
+                    <th scope="col">File Name</th>
+                    <th scope="col">File Type</th>
+                    <th scope="col">File Size</th>
+                    <th scope="col">Upload Date</th>
+                  </tr>
+                </thead>
+                <tbody *ngFor="let data of images; let i=inedx">
+                  <tr>
+                    <td>{{i}}<img  src="{{data['URL']}}"></td>
+                    <td><button type="button" class="btn btn-info">RENAME</button></td>
+                    <td><button type="button" class="btn btn-danger">DELETE</button></td>
+                    <td>{{data['FileName']}}</td>
+                    <td>{{data['FileType']}}</td>
+                    <td>{{data['FileSize']}}</td>
+                    <td>{{data['UploadDate']}}</td>
+                  </tr>
+
+                </tbody>
+              </table>
         </div>
     </div>
 </div>
