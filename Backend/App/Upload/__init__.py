@@ -3,6 +3,8 @@ import datetime
 import os
 from werkzeug.utils import secure_filename
 from Database import Database
+from PIL import Image
+import cv2
 
 from yaml import load, dump
 try:
@@ -33,6 +35,41 @@ database = Database()
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in Config['allowed_extensions']
 
+
+def video_to_frames(video_filename):
+    """Extract frames from video"""
+    cap = cv2.VideoCapture(video_filename)
+    video_length = int(cap.get(cv2.CAP_PROP_FRAME_COUNT)) - 1
+    frames = []
+    if cap.isOpened() and video_length > 0:
+        frame_ids = [0]
+        if video_length >= 4:
+            frame_ids = [0,
+                         round(video_length * 0.25),
+                         round(video_length * 0.5),
+                         round(video_length * 0.75),
+                         video_length - 1]
+        count = 0
+        success, image = cap.read()
+        while success:
+            if count in frame_ids:
+                frames.append(image)
+            success, image = cap.read()
+            count += 1
+    return frames
+
+
+def image_to_thumbs(img):
+    """Create thumbs from image"""
+    height, width, channels = img.shape
+    thumbs = {"original": img}
+    sizes = [30]
+    for size in sizes:
+        if (width >= size):
+            r = (size + 0.0) / width
+            max_size = (size, int(height * r))
+            thumbs[str(size)] = cv2.resize(img, max_size, interpolation=cv2.INTER_AREA)
+    return thumbs
 
 # Flask Module allow origin
 @app.after_request
@@ -79,6 +116,25 @@ def upload():
         with open(os.path.join(Config['upload_folder'], upload_data['FileName']), 'rb') as f:
             upload_data['FileSize'] = len(f.read())
 
+
+        ### THUMBNAIL ###
+        thumbnail_filename = ''
+        if upload_data['FileType'] == "image/png":
+            thumbnail_filename = upload_data['FileName'].split('.')[0] + '-thumbnail.' + \
+                                 upload_data['FileName'].split('.')[-1]
+            image = Image.open(os.path.join(Config['upload_folder'], upload_data['FileName']))
+            thumb = 30, 30
+            thumbnail_image = image.copy()
+            thumbnail_image.thumbnail(thumb, Image.LANCZOS)
+            thumbnail_image.save(os.path.join(Config['upload_folder'], thumbnail_filename), optimize=True, quality=95)
+        else:
+            thumbnail_filename = upload_data['FileName'].split('.')[0] + '-thumbnail.png'
+            frames = video_to_frames(upload_data['FilePath'])[0]
+            thumb = image_to_thumbs(frames)
+            for k, v in thumb.items():
+                cv2.imwrite(os.path.join(Config['upload_folder'], thumbnail_filename), v)
+        upload_data['FileThumbnailPath'] = os.path.join(Config['upload_folder'], thumbnail_filename)
+
         # Upload to database
         result_status, result_msg = database.uploadData(upload_data)
         if not result_status:
@@ -96,6 +152,17 @@ def get(filename):
         return jsonify({'error': 'File not found'}), 404
 
     return send_file(os.path.join(os.getcwd(), result_msg[0]['FilePath']))
+
+
+# Get thumbnail
+@app.route('<string:filename>/thumbnail', methods=['GET'])
+def getThumbnail(filename):
+    result_status, result_msg = database.getData(filename=filename)
+    if not result_status:
+        return jsonify({'error': result_msg}), 406
+    if not result_msg:
+        return jsonify({'error': 'File not found'}), 404
+    return send_file(os.path.join(os.getcwd(), result_msg[0]['FileThumbnailPath']))
 
 
 @app.route('', methods=['PUT'])
@@ -142,3 +209,11 @@ def remove():
         return jsonify({'error': result_msg}), 406
 
     return jsonify({'msg': 'Remove file success'})
+
+
+@app.route('database', methods=['GET'])
+def getDatabase():
+    result_status, result_msg = database.getData()
+    if not result_status:
+        return jsonify({'error': result_msg}), 406
+    return jsonify({'msg': result_msg})
