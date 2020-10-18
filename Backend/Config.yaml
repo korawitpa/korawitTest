@@ -19,4 +19,4 @@ mysql:
   username: root
   password: '' # password must have ''
   database: files_server
-  table: medial
+  table: media
