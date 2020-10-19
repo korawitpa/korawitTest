@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { RestAPIService } from '../../service/rest-api.service'
+import { PopupService } from '../../service/popup.service'
 
 @Component({
   selector: 'app-content',
@@ -8,11 +9,14 @@ import { RestAPIService } from '../../service/rest-api.service'
 })
 export class ContentComponent implements OnInit {
 
-  constructor(private apiservice: RestAPIService) { }
+  constructor(
+    private apiservice: RestAPIService,
+    private popup_service: PopupService) { }
 
   ngOnInit(): void {
     this.getdatabase()
   }
+
   images: []
   getdatabase() {
     this.apiservice.getData().subscribe(
@@ -40,5 +44,9 @@ export class ContentComponent implements OnInit {
         }
       )
     }
+  }
+  onRename(file){
+    console.log(file)
+    this.popup_service.openRename(true, file['URL'].replace('/thumbnail', ''), file['ID'], file['FilePath'], '', file['FileType'])
   }
 }

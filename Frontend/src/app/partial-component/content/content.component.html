@@ -18,6 +18,7 @@
                 <thead>
                   <tr>
                     <th scope="col">#</th>
+                    <th scope="col">Preview</th>
                     <th scope="col">Rename</th>
                     <th scope="col">Delete</th>
                     <th scope="col">File Name</th>
@@ -26,10 +27,11 @@
                     <th scope="col">Upload Date</th>
                   </tr>
                 </thead>
-                <tbody *ngFor="let data of images; let i=inedx">
+                <tbody *ngFor="let data of images; let i=index">
                   <tr>
-                    <td>{{i}}<img  src="{{data['URL']}}"></td>
-                    <td><button type="button" class="btn btn-info">RENAME</button></td>
+                    <td>{{i+1}}</td>
+                    <td><img  src="{{data['URL']}}"></td>
+                    <td><button type="button" class="btn btn-info" (click)="onRename(data)">RENAME</button></td>
                     <td><button type="button" class="btn btn-danger">DELETE</button></td>
                     <td>{{data['FileName']}}</td>
                     <td>{{data['FileType']}}</td>
@@ -38,7 +40,8 @@
                   </tr>
 
                 </tbody>
-              </table>
+            </table>
         </div>
     </div>
 </div>
+<app-rename></app-rename>

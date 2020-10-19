@@ -21,4 +21,8 @@ export class RestAPIService {
     formData.append('file', selectFile, selectFile.name);
     return this.http.post(this.URL, formData)
   }
+  renameData(fileID:number, oldName:string, newName: string): Observable<any> {
+    console.log({id: fileID, old_filename: oldName, new_filename: newName})
+    return this.http.put(this.URL, {id: fileID, old_filename: oldName, new_filename: newName})
+  }
 }
