@@ -114,12 +114,12 @@ def upload():
         file.save(os.path.join(Config['upload_folder'], upload_data['FileName']))
 
         with open(os.path.join(Config['upload_folder'], upload_data['FileName']), 'rb') as f:
-            upload_data['FileSize'] = len(f.read())
+            upload_data['FileSize'] = len(f.read()) / 1024 /1024  # Convert to MB
 
 
         ### THUMBNAIL ###
         thumbnail_filename = ''
-        if upload_data['FileType'] == "image/png":
+        if upload_data['FileType'] == "image/png" or upload_data['FileType'] == 'image/jpeg':
             thumbnail_filename = upload_data['FileName'].split('.')[0] + '-thumbnail.' + \
                                  upload_data['FileName'].split('.')[-1]
             image = Image.open(os.path.join(Config['upload_folder'], upload_data['FileName']))
@@ -170,11 +170,12 @@ def update():
     params = request.json
 
     old_filename = params['old_filename'].split('/')[-1]
-    path = params['old_filename'].replace(old_filename, '')
+    directory = params['old_filename'].replace('/'+old_filename, '')
 
     update_data = {}
     update_data['FileName'] = params['new_filename'].split('/')[-1]
-    update_data['FilePath'] = f"{path}{update_data['FileName']}"
+    update_data['FilePath'] = '{}\\\{}'.format(directory, update_data['FileName'])
+    update_data['FileThumbnailPath'] = update_data['FilePath'].split('.')[0] + '-thumbnail.' + update_data['FilePath'].split('.')[-1]
     update_data['ID'] = params['id']
 
     # Check there is file
@@ -186,6 +187,8 @@ def update():
 
     # Rename file from storage
     os.rename(params['old_filename'], params['new_filename'])
+    # Rename file thumbnail from storage
+    os.rename(params['old_filename'].split('.')[0]+'-thumbnail.' + params['old_filename'].split('.')[-1], params['new_filename'].split('.')[0]+'-thumbnail.' + params['new_filename'].split('.')[-1])
 
     # Rename file from database
     result_status, result_msg = database.updateData(update_data)
