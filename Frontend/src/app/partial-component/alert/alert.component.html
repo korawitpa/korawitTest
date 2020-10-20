@@ -1,0 +1,10 @@
+<div class="backdrop" *ngIf="data['status']">
+    <div class="card bg-light mb-3 text-center" style="max-width: 80%;">
+        <div class="card-body"> 
+            <img *ngIf="data['type'] == 'alert'" class="card-img-top" src="../../../assets/alert.png" alt="Card image cap">
+            <img *ngIf="data['type'] == 'correct'" class="card-img-top" src="../../../assets/correct.svg" alt="Card image cap">
+            <p class="card-text">{{data['message']}}</p>
+            <button type="button" class="btn btn-success" (click)="onOK()">OK</button>
+        </div>
+      </div>
+</div>
