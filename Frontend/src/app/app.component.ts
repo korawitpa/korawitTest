@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { from } from 'rxjs';
 import { RestAPIService } from './service/rest-api.service'
+import { PopupService } from './service/popup.service'
 
 @Component({
   selector: 'app-root',
@@ -12,21 +13,24 @@ export class AppComponent {
   image: any
 
   constructor(
-    private restapi: RestAPIService) { }
+    private restapi: RestAPIService,
+    private popup_service: PopupService) { }
   
   ngOnInit() {
     // this.getData();
   }
 
-  getData = () => {
-    this.restapi.getData().subscribe(
-      result => {
-        this.image = result
-        console.log(this.image)
-      },
-      error => {
-        console.log(error.error)
-      })
-  }
+  // getData = () => {
+  //   this.popup_service.openLoading(true)
+  //   this.restapi.getData().subscribe(
+  //     result => {
+  //       this.popup_service.openLoading(false)
+  //       this.image = result
+  //     },
+  //     error => {
+  //       this.popup_service.openLoading(false)
+  //       console.log(error.error)
+  //     })
+  // }
 
 }
