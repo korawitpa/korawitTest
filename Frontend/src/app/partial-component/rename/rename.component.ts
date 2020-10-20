@@ -1,4 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { error } from 'protractor';
 import { PopupService } from '../../service/popup.service'
 import { RestAPIService } from '../../service/rest-api.service'
 
@@ -20,7 +21,6 @@ export class RenameComponent implements OnInit {
       result => {
         this.newFilename = ''  // Clear new filename
         this.data = result
-        console.log(this.data)
         if (result['fileType'] != ''){
           this.data['onlyOldFilename'] = this.data['fileOldname'].split('\\')[1].split('.')[0]
           this.data['directory'] = this.data['fileOldname'].split('\\')[0]
@@ -32,7 +32,6 @@ export class RenameComponent implements OnInit {
             this.data['fileType'] = 'video'
           }
         }
-          
       }
     )
   }
@@ -45,11 +44,18 @@ export class RenameComponent implements OnInit {
   }
 
   onOK =() => {
+    this.popup_service.openLoading(true)
     this.data['fileNewname'] = this.data['directory'] + '/' + this.newFilename + '.' + this.data['typeofFile']
     this.data['fileOldname'] = this.data['fileOldname'].replace('\\','/')
     this.apiservice.renameData(this.data['fileID'], this.data['fileOldname'], this.data['fileNewname']).subscribe(
       result => {
         this.onCancel()
+        this.popup_service.openLoading(false)
+        this.popup_service.openAlert(true,'correct',result['msg'])
+      },
+      error => {
+        this.popup_service.openLoading(false)
+        this.popup_service.openAlert(true,'alert',error.error['error'])
       }
     )
   }
