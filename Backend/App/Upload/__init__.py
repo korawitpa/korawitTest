@@ -168,7 +168,6 @@ def getThumbnail(filename):
 @app.route('', methods=['PUT'])
 def update():
     params = request.json
-
     old_filename = params['old_filename'].split('/')[-1]
     directory = params['old_filename'].replace('/'+old_filename, '')
 
@@ -200,14 +199,24 @@ def update():
 
 @app.route('', methods=['DELETE'])
 def remove():
-    params = request.json
+    params = {}
+    params['id'] = int(request.args.get('id'))
+    params['file_path'] = request.args.get('file_path')
+    params['file_thumbnail_path'] = request.args.get('file_thumbnail_path')
+
+    temp_param = {}
+    temp_param['file_path'] = params['file_path'].replace('\\', '/')
+    temp_param['file_thumbnail_path'] = params['file_thumbnail_path'].replace('\\', '/')
+
 
     # Remove file from storage
-    if os.path.exists(params['file_path']):
-        os.remove(params['file_path'])
+    if os.path.exists(temp_param['file_path']):
+        os.remove(temp_param['file_path'])
+    if os.path.exists(temp_param['file_thumbnail_path']):
+        os.remove(temp_param['file_thumbnail_path'])
 
     # Remove file from database
-    result_status, result_msg = database.removeData(params)
+    result_status, result_msg = database.removeData(params['id'])
     if not result_status:
         return jsonify({'error': result_msg}), 406
 
@@ -216,7 +225,15 @@ def remove():
 
 @app.route('database', methods=['GET'])
 def getDatabase():
-    result_status, result_msg = database.getData()
+    params = {}
+    params['FileName'] = request.args.get('filename')
+    params['FileType'] = request.args.get('filetype')
+    params['UploadDate'] = request.args.get('uploaddate')
+
+    if params['FileName'] == '' and params['FileType'] == '' and params['UploadDate'] == '':
+        params = None
+
+    result_status, result_msg = database.getData(filter=params)
     if not result_status:
         return jsonify({'error': result_msg}), 406
     return jsonify({'msg': result_msg})
