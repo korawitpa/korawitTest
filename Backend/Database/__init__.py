@@ -72,11 +72,24 @@ class Database:
         except Exception as e:
             return False, "Insert file error: {}".format(e)
 
-    def getData(self, filename=None):
+    def getData(self, filename=None, filter=None):
         try:
             querty_string = 'SELECT * FROM {}'.format(Config['mysql']['table'])
             if filename:
                 querty_string += ' WHERE FileName="{}"'.format(filename)
+            elif filter is not None:
+                querty_string += ' WHERE'
+                querty_set = []
+                if 'FileName' in filter:
+                    if filter['FileName'] != '':
+                        querty_set.append(" FileName LIKE '%{}%'".format(filter['FileName']))
+                if 'FileType' in filter:
+                    if filter['FileType'] != '':
+                        querty_set.append(" FileType LIKE '%{}%'".format(filter['FileType']))
+                if 'UploadDate' in filter:
+                    if filter['UploadDate'] != '':
+                        querty_set.append(" UploadDate BETWEEN '{0} 00:00:00' AND '{0} 23:59:59'".format(filter['UploadDate']))
+                querty_string+= ' AND'.join(querty_set)
 
             connection_context, cursor = self.connectToDatabase()
             cursor.execute(querty_string)
