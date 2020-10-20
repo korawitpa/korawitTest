@@ -1,0 +1,8 @@
+<div class="backdrop" *ngIf="data['status']" >
+    <img *ngIf="data['type'] == 'image'" class="card-img-top" src="{{data['url']}}" alt="Card image cap">
+    <video id="myVideo" *ngIf="data['type'] == 'video'" class="card-img-top" controls>
+      <source src="{{data['url']}}" type="video/mp4">
+    Your browser does not support the video tag.
+    </video>
+    <button type="button" class="btn btn-success" (click)="onClose()">BACK</button>
+</div>
