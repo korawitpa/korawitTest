@@ -2,3 +2,21 @@
 debug: True
 port: 8000
 host: 127.0.0.1
+
+# Upload configuration
+file_size: 50
+upload_folder: uploads
+allowed_extensions:
+  - jpg
+  - jpeg
+  - png
+  - mp4
+
+# Database Configuration
+mysql:
+  url: 127.0.0.1
+  port: 3306
+  username: root
+  password: '' # password must have ''
+  database: files_server
+  table: media
