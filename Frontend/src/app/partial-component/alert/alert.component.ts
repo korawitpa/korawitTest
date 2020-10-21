@@ -25,5 +25,6 @@ export class AlertComponent implements OnInit {
 
   onOK() {
     this.popup_service.openAlert(false,'','')
+    location.reload()
   }
 }
