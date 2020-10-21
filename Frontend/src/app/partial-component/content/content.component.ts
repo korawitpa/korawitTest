@@ -26,15 +26,17 @@ export class ContentComponent implements OnInit {
 
   getdatabase() {
     this.popup_service.openLoading(true)
+    let tempFileType =''
     if (this.filter['filetype'] != ''){
       if (this.filter['filetype'] == 'mp4'){
-        this.filter['filetype'] = 'video/' + this.filter['filetype']
+        tempFileType = 'video/' + this.filter['filetype']
       }
       else {
-        this.filter['filetype'] = 'image/' + this.filter['filetype']
+        tempFileType = 'image/' + this.filter['filetype']
       }
     }
-    this.apiservice.getData(this.filter['filename'], this.filter['filetype'], this.filter['uploaddate']).subscribe(
+
+    this.apiservice.getData(this.filter['filename'], tempFileType, this.filter['uploaddate']).subscribe(
       result => {
         this.popup_service.openLoading(false)
         result['msg'].forEach(element => {
@@ -64,7 +66,6 @@ export class ContentComponent implements OnInit {
         },
         error => {
           this.popup_service.openLoading(false)
-          console.log(error)
           if (error.status == 406){
             this.popup_service.openAlert(true, 'alert', error.error['error'])
           }
