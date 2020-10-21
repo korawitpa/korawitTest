@@ -119,7 +119,7 @@ def upload():
 
         ### THUMBNAIL ###
         thumbnail_filename = upload_data['FileName'].split('.')[0] + '-thumbnail.png'
-        if upload_data['FileType'] == "image/png" or upload_data['FileType'] == 'image/jpeg':
+        if upload_data['FileType'] == "image/png" or upload_data['FileType'] == 'image/jpeg' or upload_data['FileType'] == 'image/jpg':
 
             image = Image.open(os.path.join(Config['upload_folder'], upload_data['FileName']))
             thumb = 30, 30
