@@ -118,17 +118,15 @@ def upload():
 
 
         ### THUMBNAIL ###
-        thumbnail_filename = ''
+        thumbnail_filename = upload_data['FileName'].split('.')[0] + '-thumbnail.png'
         if upload_data['FileType'] == "image/png" or upload_data['FileType'] == 'image/jpeg':
-            thumbnail_filename = upload_data['FileName'].split('.')[0] + '-thumbnail.' + \
-                                 upload_data['FileName'].split('.')[-1]
+
             image = Image.open(os.path.join(Config['upload_folder'], upload_data['FileName']))
             thumb = 30, 30
             thumbnail_image = image.copy()
             thumbnail_image.thumbnail(thumb, Image.LANCZOS)
             thumbnail_image.save(os.path.join(Config['upload_folder'], thumbnail_filename), optimize=True, quality=95)
         else:
-            thumbnail_filename = upload_data['FileName'].split('.')[0] + '-thumbnail.png'
             frames = video_to_frames(upload_data['FilePath'])[0]
             thumb = image_to_thumbs(frames)
             for k, v in thumb.items():
@@ -174,7 +172,7 @@ def update():
     update_data = {}
     update_data['FileName'] = params['new_filename'].split('/')[-1]
     update_data['FilePath'] = '{}\\\{}'.format(directory, update_data['FileName'])
-    update_data['FileThumbnailPath'] = update_data['FilePath'].split('.')[0] + '-thumbnail.' + update_data['FilePath'].split('.')[-1]
+    update_data['FileThumbnailPath'] = update_data['FilePath'].split('.')[0] + '-thumbnail.png'
     update_data['ID'] = params['id']
 
     # Check there is file
@@ -187,7 +185,7 @@ def update():
     # Rename file from storage
     os.rename(params['old_filename'], params['new_filename'])
     # Rename file thumbnail from storage
-    os.rename(params['old_filename'].split('.')[0]+'-thumbnail.' + params['old_filename'].split('.')[-1], params['new_filename'].split('.')[0]+'-thumbnail.' + params['new_filename'].split('.')[-1])
+    os.rename(params['old_filename'].split('.')[0]+'-thumbnail.png', params['new_filename'].split('.')[0]+'-thumbnail.png')
 
     # Rename file from database
     result_status, result_msg = database.updateData(update_data)
