@@ -7,24 +7,13 @@
                 </div>
                 <input type="text" aria-label="filename" class="form-control" placeholder="File Name" [(ngModel)]="filter['filename']">
                 <!-- <input type="text" aria-label="filetype" class="form-control" placeholder="File Type" [(ngModel)]="filter['filetype']"> -->
-                <!-- <select>
-                  <option value="all" disabled selected hidden>File Type ALL</option>
+                <select class="form-control" [(ngModel)]="filter['filetype']">
+                  <option value="">File Type ALL</option>
                   <option value="jpg">JPG</option>
                   <option value="jpeg">JPEG</option>
                   <option value="png">PNG</option>
                   <option value="mp4">MP4</option>
-                </select> -->
-                <div class="dropdown">
-                  <a class="btn btn-secondary dropdown-toggle" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Dropdown link
-                  </a>
-                
-                  <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                    <a class="dropdown-item" href="#">Action</a>
-                    <a class="dropdown-item" href="#">Another action</a>
-                    <a class="dropdown-item" href="#">Something else here</a>
-                  </div>
-                </div>
+                </select>
                 
                 <input type="date" aria-label="uploaddate" class="form-control" [(ngModel)]="filter['uploaddate']">
                 <button type="button" class="btn btn-secondary" (click)="getdatabase()">SEARCH</button>
@@ -49,7 +38,7 @@
                 <tbody *ngFor="let data of images; let i=index">
                   <tr>
                     <td>{{i+1}}</td>
-                    <td><img  src="{{data['URL']}}" (click)="onPreview(data)"></td>
+                    <td><img  src="{{data['URL']}}" loading="lazy" (click)="onPreview(data)"></td>
                     <td><button type="button" class="btn btn-info" (click)="onRename(data)">RENAME</button></td>
                     <td><button type="button" class="btn btn-danger" (click)="onDelete(data)">DELETE</button></td>
                     <td>{{data['FileName']}}</td>
