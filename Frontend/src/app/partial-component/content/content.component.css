@@ -1,0 +1,44 @@
+.container-full {
+    /* height: 100%; */
+    margin: 10px;
+    border-radius: 6px;
+    box-shadow: 0 15px 30px 0 rgba(0,0,0,0.11),
+    0 5px 15px 0 rgba(0,0,0,0.08);
+    display: flex;
+    flex-direction: column;
+}
+.content {
+    border: solid black 1px;
+    /* height: 300px; */
+    margin: 10px 10px 10px 10px;
+}
+.row {
+    display: flex;
+    flex-direction: row;
+    margin: 10px;
+    align-items: center;
+}
+td img, td video{
+    width: 50px;
+    height: 50px;
+    cursor: pointer;
+}
+/* input {
+    border: solid rgb(167, 215, 255) 2px;
+    border-radius: 6px;
+    margin-left: 10px;
+    line-height: 25px;
+    transition: border .3s ease;
+}
+input:focus {
+    border: solid steelblue 2px;
+    outline: none;
+} */
+/* button {
+    border-radius: 6px;
+    margin-left: 10px;
+    width: 100px;
+    line-height: 20px;
+    outline:none;
+     border: solid green 1px;
+} */

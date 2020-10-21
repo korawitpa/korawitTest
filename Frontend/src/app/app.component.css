@@ -1,0 +1,11 @@
+.container-full {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+.header {
+    height: 100px;
+}
+.content {
+    height: 100%;
+}

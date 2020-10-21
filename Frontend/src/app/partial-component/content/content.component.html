@@ -1,0 +1,59 @@
+<div class="container-full">
+    <div class="content">
+        <div class="row">
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">SEARCH</span>
+                </div>
+                <input type="text" aria-label="filename" class="form-control" placeholder="File Name" [(ngModel)]="filter['filename']">
+                <!-- <input type="text" aria-label="filetype" class="form-control" placeholder="File Type" [(ngModel)]="filter['filetype']"> -->
+                <select class="form-control" [(ngModel)]="filter['filetype']">
+                  <option value="">File Type ALL</option>
+                  <option value="jpg">JPG</option>
+                  <option value="jpeg">JPEG</option>
+                  <option value="png">PNG</option>
+                  <option value="mp4">MP4</option>
+                </select>
+                
+                <input type="date" aria-label="uploaddate" class="form-control" [(ngModel)]="filter['uploaddate']">
+                <button type="button" class="btn btn-secondary" (click)="getdatabase()">SEARCH</button>
+                <button type="button" class="btn btn-secondary" onclick="document.getElementById('getFile').click()">UPLOAD</button>
+                <input type='file' id="getFile" style="display:none" (change)="upload($event)">
+            </div>
+        </div>
+        <div class="row">
+            <table class="table">
+                <thead>
+                  <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Preview</th>
+                    <th scope="col">Rename</th>
+                    <th scope="col">Delete</th>
+                    <th scope="col">File Name</th>
+                    <th scope="col">File Type</th>
+                    <th scope="col">File Size (MB)</th>
+                    <th scope="col">Upload Date</th>
+                  </tr>
+                </thead>
+                <tbody *ngFor="let data of images; let i=index">
+                  <tr>
+                    <td>{{i+1}}</td>
+                    <td><img  src="{{data['URL']}}" loading="lazy" (click)="onPreview(data)"></td>
+                    <td><button type="button" class="btn btn-info" (click)="onRename(data)">RENAME</button></td>
+                    <td><button type="button" class="btn btn-danger" (click)="onDelete(data)">DELETE</button></td>
+                    <td>{{data['FileName']}}</td>
+                    <td>{{data['FileType']}}</td>
+                    <td>{{data['FileSize']}}</td>
+                    <td>{{data['UploadDate']}}</td>
+                  </tr>
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<app-rename></app-rename>
+<app-delete></app-delete>
+<app-spinner></app-spinner>
+<app-alert></app-alert>
+<app-preview></app-preview>

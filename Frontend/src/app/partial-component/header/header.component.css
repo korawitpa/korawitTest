@@ -1,0 +1,14 @@
+.container-full {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    background-color: #6a7f8e;
+    box-shadow: 0 8px 10px -6px black;
+}
+.title {
+    color: whitesmoke;
+    font-weight: 700;
+    font-size: 20px;
+    font-family: 'Raleway',sans-serif;
+    margin-left: 20px;
+}
