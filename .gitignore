@@ -3,5 +3,4 @@ Backend/.idea/*
 Backend/venv/*
 Backend/App/__pycache__/*
 Backend/App/Upload/__pycache__/*
-Backend/uploads/*
 Backend/Database/__pycache__/*
